@@ -17,9 +17,15 @@ func NewServer() *server {
 	}
 }
 
-func (s *server) GetPing(w http.ResponseWriter, r *http.Request) {
-	resp := Pong{
-		Ping: s.service.Echo("pong"),
+func (s *server) Echo(w http.ResponseWriter, r *http.Request) {
+
+	var phrase Phrase
+	if err := json.NewDecoder(r.Body).Decode(&phrase); err != nil {
+		panic(err)
+	}
+
+	resp := Echo{
+		Response: phrase.Phrase,
 	}
 
 	w.WriteHeader(http.StatusOK)

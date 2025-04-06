@@ -1,0 +1,44 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Echo API Server
+paths:
+  /:
+    post:
+      summary: Send a echo request
+      description: Echoes back the request body.
+      operationId: echo
+      requestBody:
+        description: Request body to echo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Phrase'
+      responses:
+        '200':
+          description: echo response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Echo'
+
+components:
+  schemas:
+    Phrase:
+      type: object
+      required:
+        - phrase
+      properties:
+        phrase:
+          type: string
+          example: ping
+
+    Echo:
+      type: object
+      required:
+        - response
+      properties:
+        response:
+          type: string
+          example: pong

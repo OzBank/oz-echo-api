@@ -1,4 +1,3 @@
-//go:generate go tool oapi-codegen -config cfg.yaml api.yaml
 package main
 
 import (

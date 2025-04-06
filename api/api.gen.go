@@ -10,16 +10,24 @@ import (
 	"net/http"
 )
 
-// Pong defines model for Pong.
-type Pong struct {
-	Ping string `json:"ping"`
+// Echo defines model for Echo.
+type Echo struct {
+	Response string `json:"response"`
 }
+
+// Phrase defines model for Phrase.
+type Phrase struct {
+	Phrase string `json:"phrase"`
+}
+
+// EchoJSONRequestBody defines body for Echo for application/json ContentType.
+type EchoJSONRequestBody = Phrase
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-
-	// (GET /ping)
-	GetPing(w http.ResponseWriter, r *http.Request)
+	// Send a echo request
+	// (POST /)
+	Echo(w http.ResponseWriter, r *http.Request)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -31,11 +39,11 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// GetPing operation middleware
-func (siw *ServerInterfaceWrapper) GetPing(w http.ResponseWriter, r *http.Request) {
+// Echo operation middleware
+func (siw *ServerInterfaceWrapper) Echo(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetPing(w, r)
+		siw.Handler.Echo(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -165,7 +173,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
-	m.HandleFunc("GET "+options.BaseURL+"/ping", wrapper.GetPing)
+	m.HandleFunc("POST "+options.BaseURL+"/", wrapper.Echo)
 
 	return m
 }
